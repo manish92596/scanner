@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 import subprocess
 import logging
 import argparse
@@ -7,8 +8,8 @@ import time
 import os
 import importlib.util
 import inspect
-from flask import Flask, request, jsonify
 
+app = Flask(__name__)
 from api.List_APIs import list_routes_in_file
 
 # Setup logging
@@ -151,10 +152,12 @@ def scan():
     update_caches(file_path)
     return jsonify({"status": "Scan completed"}), 200
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Run the API scanner.')
-    parser.add_argument('--host', type=str, default='0.0.0.0', help='Host for the Flask server')
-    parser.add_argument('--port', type=int, default=5000, help='Port for the Flask server')
-    args = parser.parse_args()
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description='Run the API scanner.')
+#     parser.add_argument('--host', type=str, default='0.0.0.0', help='Host for the Flask server')
+#     parser.add_argument('--port', type=int, default=5000, help='Port for the Flask server')
+#     args = parser.parse_args()
 
-    app.run(host=args.host, port=args.port)
+#     app.run(host=args.host, port=args.port)
+if __name__ == "__main__":
+    app.run(debug=True)
