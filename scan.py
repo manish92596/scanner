@@ -610,5 +610,10 @@ def scan_endpoint():
 
     return jsonify({"status": "No action required"}), 400
 
+@app.route('/', methods=['GET'])
+def root():
+    print("Amn")
+    return jsonify({"status": "Success"}),200
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
