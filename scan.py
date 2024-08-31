@@ -585,6 +585,7 @@ def update_caches(file_path):
 
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
+    print("1")
     """Handle incoming webhook events and process the received file content."""
     if WEBHOOK_SECRET:
         signature = request.headers.get('X-Hub-Signature-256')
@@ -592,18 +593,19 @@ def scan_endpoint():
             abort(400, 'Invalid signature')
 
     data = request.json
+    print("2")
     if 'file_path' in data and 'file_content' in data:
         file_path = data['file_path']
         file_content = data['file_content']
-
+        print("3")
         # Save the content to a dummy.py file for further processing
         dummy_file_path = "dummy.py"
         with open(dummy_file_path, 'w') as dummy_file:
             dummy_file.write(file_content)
-
+            print("4")
         # Process the saved file content
         threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
-
+        print("5")
         return jsonify({"status": "Processing started"}), 200
 
     return jsonify({"status": "No action required"}), 400
