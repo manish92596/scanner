@@ -664,7 +664,7 @@ def scan_endpoint():
     """Handle incoming webhook events and process the received file content."""
     
     data = request.json
-    print(data)
+    print(data,"hell")
     
     try:
         commit_sha = data['after']
