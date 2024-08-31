@@ -1,5 +1,14 @@
-flask
+blinker==1.8.2
+click==8.1.7
+colorama==0.4.6
+Flask==3.0.3
+Flask-Cors==4.0.1
+itsdangerous==2.2.0
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+Werkzeug==3.0.4
 watchdog==2.1.6
 mysql-connector-python==8.0.31
 requests==2.31.0
 importlib-metadata==6.0.0
+gunicorn==21.0.1
