@@ -397,7 +397,7 @@ def update_caches(file_path):
 
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
-    print("Data is coming")
+    
     """Handle incoming webhook events and process modified files."""
     if WEBHOOK_SECRET:
         signature = request.headers.get('X-Hub-Signature-256')
@@ -405,7 +405,7 @@ def scan_endpoint():
             abort(400, 'Invalid signature')
 
     data = request.json
-
+    print("Data is coming")
     if data.get('ref') == 'refs/heads/main':  # Ensure we're processing only the main branch
         repo_full_name = data['repository']['full_name']
         commit_sha = data['after']
