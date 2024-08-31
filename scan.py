@@ -343,6 +343,16 @@ def update_caches(file_path):
         cursor.close()
         conn.close()
 
+
+@app.route('/dummy', methods=['get'])
+def scan_endpoint():
+    return jsonify({"status": "Scanning started."}),200
+    
+    
+
+
+
+
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
     data = request.json
