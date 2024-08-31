@@ -593,7 +593,7 @@ def scan_endpoint():
     #         abort(400, 'Invalid signature')
 
     data = request.json
-    print(data, request)
+    print(data.after)
     print("2")
     if 'file_path' in data and 'file_content' in data:
         file_path = data['file_path']
