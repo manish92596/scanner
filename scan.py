@@ -24,13 +24,16 @@ last_update_time = 0
 update_interval = 2  # seconds
 
 # Database connection parameters
+
 db_params = {
-    "host": None,
-    "user": None,
-    "password": None,
-    "database": None,
-    "port": None
+    "host": "api-security-db.co0ynpevyflj.ap-south-1.rds.amazonaws.com",
+    "user": "root",
+    "password": "abhi1301",
+    "database": "api_database",
+    "port": 5506,
 }
+
+
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -179,6 +182,31 @@ def update_caches(file_path):
 def dummy_endpoint():
     return jsonify({"status": "Dummy endpoint reached."}), 200
 
+# @app.route('/scan', methods=['POST'])
+# def scan_endpoint():
+#     # Verify the webhook secret if it exists
+#     if WEBHOOK_SECRET:
+#         signature = request.headers.get('X-Hub-Signature-256')
+#         if not signature or not verify_signature(request.data, signature):
+#             abort(400, 'Invalid signature')
+
+#     data = request.json
+
+#     # Handle the push event
+#     if data.get('ref') == 'refs/heads/main':
+#         for commit in data.get('commits', []):
+#             for modified_file in commit.get('modified', []):
+#                 if modified_file == "e-commerce.py":
+#                     file_content = data.get('head_commit', {}).get('message')  # Assuming the file content is part of the message
+#                     save_file_content("e-commerce.py", file_content)
+#                     save_to_new_txt(file_content)
+
+#                     # Optionally, trigger cache update or any other processing
+#                     threading.Thread(target=update_caches, args=("e-commerce.py",)).start()
+#                     return jsonify({"status": "Processing started for e-commerce.py"}), 200
+
+#     return jsonify({"status": "No action required"}), 200
+
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
     # Verify the webhook secret if it exists
@@ -189,20 +217,19 @@ def scan_endpoint():
 
     data = request.json
 
-    # Handle the push event
-    if data.get('ref') == 'refs/heads/main':
-        for commit in data.get('commits', []):
-            for modified_file in commit.get('modified', []):
-                if modified_file == "e-commerce.py":
-                    file_content = data.get('head_commit', {}).get('message')  # Assuming the file content is part of the message
-                    save_file_content("e-commerce.py", file_content)
-                    save_to_new_txt(file_content)
+    # Save the JSON content to dummy.py
+    if data:
+        print("data coming")
+        dummy_file_path = "dummy.py"
+        with open(dummy_file_path, 'w') as dummy_file:
+            dummy_file.write(str(data))  # Convert the JSON content to a string and save it
 
-                    # Optionally, trigger cache update or any other processing
-                    threading.Thread(target=update_caches, args=("e-commerce.py",)).start()
-                    return jsonify({"status": "Processing started for e-commerce.py"}), 200
+        # Trigger cache update or any other processing using the dummy.py file
+        threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
+        return jsonify({"status": "Processing started for dummy.py"}), 200
 
     return jsonify({"status": "No action required"}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
