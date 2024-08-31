@@ -587,13 +587,13 @@ def update_caches(file_path):
 def scan_endpoint():
     print("1")
     """Handle incoming webhook events and process the received file content."""
-    if WEBHOOK_SECRET:
-        signature = request.headers.get('X-Hub-Signature-256')
-        if not signature or not verify_signature(request.data, signature):
-            abort(400, 'Invalid signature')
+    # if WEBHOOK_SECRET:
+    #     signature = request.headers.get('X-Hub-Signature-256')
+    #     if not signature or not verify_signature(request.data, signature):
+    #         abort(400, 'Invalid signature')
 
     data = request.json
-    print(data)
+    print(data, request)
     print("2")
     if 'file_path' in data and 'file_content' in data:
         file_path = data['file_path']
