@@ -400,7 +400,6 @@ cached_api_routes = None
 cached_vulnerabilities = None
 last_update_time = 0
 update_interval = 2  # seconds
-WEBHOOK_SECRET = "manish302"
 
 def load_analyzers():
     """Dynamically load all vulnerability analyzers from the 'vulnerabilities' directory."""
