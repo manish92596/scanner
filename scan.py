@@ -455,7 +455,6 @@
 
 
 import hmac
-import requests
 import hashlib
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
@@ -468,10 +467,6 @@ from contextlib import contextmanager
 import importlib
 import inspect
 from api.List_APIs import list_routes_in_file
-import requests
-from flask import Flask, jsonify, request, abort
-from flask_cors import CORS
-import threading
 
 # Flask app setup
 app = Flask(__name__)
@@ -588,104 +583,33 @@ def update_caches(file_path):
             save_to_database(cursor, cached_api_routes, cached_vulnerabilities)
             conn.commit()
 
-# @app.route('/scan', methods=['POST'])
-# def scan_endpoint():
-#     print("1")
-#     """Handle incoming webhook events and process the received file content."""
-
-#     data = request.json
-#     print(data['after'],"Hello", data)
-#     print("2")
-#     if 'file_path' in data and 'file_content' in data:
-#         file_path = data['file_path']
-#         file_content = data['file_content']
-#         print("3")
-#         # Save the content to a dummy.py file for further processing
-#         dummy_file_path = "dummy.py"
-#         with open(dummy_file_path, 'w') as dummy_file:
-#             dummy_file.write(file_content)
-#             print("4")
-#         # Process the saved file content
-#         threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
-#         print("5")
-#         return jsonify({"status": "Processing started"}), 200
-
-#     return jsonify({"status": "No action required"}), 400
-
-def get_file_content_url(repo, path, commit_sha):
-    return f"https://raw.githubusercontent.com/{repo}/{commit_sha}/{path}"
-
-# Function to process the commit
-def process_commit(repo, commit_sha):
-    # GitHub API URL for the specific commit
-    commit_url = f"https://api.github.com/repos/{repo}/commits/{commit_sha}"
-
-    # Make the API request to get commit details
-    response = requests.get(commit_url, headers={"Accept": "application/vnd.github.v3+json"})
-
-    if response.status_code == 200:
-        commit_data = response.json()
-        
-        for file in commit_data['files']:
-            filename = file['filename']
-            patch = file.get('patch', None)
-
-            print(f"File: {filename}")
-            
-            # Fetch the full content of the file at the specific commit
-            file_url = get_file_content_url(repo, filename, commit_sha)
-            file_response = requests.get(file_url)
-            
-            if file_response.status_code == 200:
-                full_content = file_response.text
-                print("Full File Content:")
-                print(full_content)
-                # Save the content to a dummy.py file for further processing
-                dummy_file_path = "dummy.py"
-                with open(dummy_file_path, 'w') as dummy_file:
-                    dummy_file.write(full_content)
-                    print(f"Saved content of {filename} to dummy.py")
-                # Process the saved file content (using threading for background processing)
-                threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
-            else:
-                print(f"Failed to fetch file content for {filename}, status code: {file_response.status_code}")
-            
-            if patch:
-                print("\nChanged Lines:")
-                for line in patch.split('\n'):
-                    if line.startswith('+') or line.startswith(' '):
-                        print(line)
-                print("-" * 40)
-    else:
-        print(f"Failed to fetch commit data: {response.status_code}")
-
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
+    print("1")
     """Handle incoming webhook events and process the received file content."""
-    
-    data = request.json
-    print(data)
-    
-    try:
-        commit_sha = data['after']
-        print(f"Processing commit SHA: {commit_sha}")
-        
-        # Extract the repository information from the webhook data
-        repo_full_name = data['repository']['full_name']
-        
-        # Start processing the commit
-        process_commit(repo_full_name, commit_sha)
-        
-        return jsonify({"status": "Processing started"}), 200
-    
-    except KeyError as e:
-        print(f"KeyError: Missing key in JSON data - {e}")
-        return jsonify({"error": f"Missing key: {e}"}), 400
-    
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return jsonify({"error": "An unexpected error occurred"}), 500
+    # if WEBHOOK_SECRET:
+    #     signature = request.headers.get('X-Hub-Signature-256')
+    #     if not signature or not verify_signature(request.data, signature):
+    #         abort(400, 'Invalid signature')
 
+    data = request.json
+    print(data['after'],"Hello", data)
+    print("2")
+    if 'file_path' in data and 'file_content' in data:
+        file_path = data['file_path']
+        file_content = data['file_content']
+        print("3")
+        # Save the content to a dummy.py file for further processing
+        dummy_file_path = "dummy.py"
+        with open(dummy_file_path, 'w') as dummy_file:
+            dummy_file.write(file_content)
+            print("4")
+        # Process the saved file content
+        threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
+        print("5")
+        return jsonify({"status": "Processing started"}), 200
+
+    return jsonify({"status": "No action required"}), 400
 
 @app.route('/home', methods=['GET'])
 def root():
