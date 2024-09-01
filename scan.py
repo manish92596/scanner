@@ -677,18 +677,21 @@ def verify_signature(payload, signature, secret):
 
 @app.route('/scan', methods=['POST'])
 def scan_endpoint():
+    print("1")
     """Handle incoming webhook events and process the received file content."""
     signature=request.headers.get('X-Hub-Signature-256')
     if signature is None:
+        print("2")
         print("No signature provided.")
         return jsonify({"error": "No signature provided"}), 400
-    
+    print("3")
      # Verify the signature
     payload = request.data
     if not verify_signature(payload, signature.split('=')[1], WEBHOOK_SECRET):
+        print("4")
         print("Signature verification failed.")
         abort(400, 'Signature verification failed')
-
+    print("5")
 
 
     data = request.json
