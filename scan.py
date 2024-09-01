@@ -489,7 +489,7 @@ def process_commit(repo, commit_sha):
                 full_content = file_response.text
 
                 # Save the content to a dummy file (e.g., api.py) for further processing
-                dummy_file_path = "api.py"
+                dummy_file_path = "dummy.py"
                 with open(dummy_file_path, 'w') as dummy_file:
                     dummy_file.write(full_content)
                     print(f"Saved content of {filename} to {dummy_file_path}")
