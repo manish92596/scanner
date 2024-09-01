@@ -296,6 +296,7 @@ def verify_signature(payload, signature):
     expected_signature = 'sha256=' + hash_object.hexdigest()
     return hmac.compare_digest(expected_signature, signature)
 
+
 def save_to_database(cursor, api_routes, vulnerabilities):
     """Save the API routes and vulnerabilities directly to the database."""
     cursor.execute("DELETE FROM api_routes")
@@ -308,11 +309,34 @@ def save_to_database(cursor, api_routes, vulnerabilities):
     cursor.execute("DELETE FROM vulnerabilities")
     for vuln_type, routes in vulnerabilities.items():
         for route_name in routes:
-            cursor.execute(
-                "INSERT INTO vulnerabilities (vulnerability_type, route_name) VALUES (%s, %s)",
-                (vuln_type, route_name)
-            )
+            if route_name:  # Ensure route_name is not None or empty
+                cursor.execute(
+                    "INSERT INTO vulnerabilities (vulnerability_type, route_name) VALUES (%s, %s)",
+                    (vuln_type, route_name)
+                )
+            else:
+                logging.warning(f"Skipped inserting a vulnerability with null or empty route_name for {vuln_type}")
+    
     logging.info("Database updated with API routes and vulnerabilities.")
+
+
+# def save_to_database(cursor, api_routes, vulnerabilities):
+#     """Save the API routes and vulnerabilities directly to the database."""
+#     cursor.execute("DELETE FROM api_routes")
+#     for route, methods in api_routes:
+#         cursor.execute(
+#             "INSERT INTO api_routes (path, methods) VALUES (%s, %s)",
+#             (route, methods)
+#         )
+    
+#     cursor.execute("DELETE FROM vulnerabilities")
+#     for vuln_type, routes in vulnerabilities.items():
+#         for route_name in routes:
+#             cursor.execute(
+#                 "INSERT INTO vulnerabilities (vulnerability_type, route_name) VALUES (%s, %s)",
+#                 (vuln_type, route_name)
+#             )
+#     logging.info("Database updated with API routes and vulnerabilities.")
 
 def load_analyzers():
     """Dynamically load all vulnerability analyzers from the 'vulnerabilities' directory."""
