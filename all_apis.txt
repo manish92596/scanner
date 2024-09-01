@@ -1,0 +1,16 @@
+{'path': '/login', 'methods': ['POST']}
+{'path': '/products', 'methods': ['GET']}
+{'path': '/order', 'methods': ['POST']}
+{'path': '/search', 'methods': ['GET']}
+{'path': '/logout', 'methods': ['POST']}
+{'path': '/user/details', 'methods': ['GET']}
+{'path': '/change-password', 'methods': ['POST']}
+{'path': '/delete-order/<int:order_id>', 'methods': ['DELETE']}
+{'path': '/api/all-endpoints', 'methods': ['GET']}
+{'path': '/unsafe-load', 'methods': ['POST']}
+{'path': '/process-payment', 'methods': ['POST']}
+{'path': '/', 'methods': 'GET'}
+{'path': '/fetch', 'methods': ['GET', 'POST']}
+{'path': '/fetch-data', 'methods': ['POST']}
+{'path': '/redirect', 'methods': ['POST']}
+{'path': '/dummy', 'methods': ['POST']}

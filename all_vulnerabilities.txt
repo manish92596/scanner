@@ -1,0 +1,37 @@
+Broken Function Level Authorization:
+ - delete_order
+
+Broken Object Level Authorization:
+ - products
+ - search
+
+Broken Object Property Level Authorization:
+ - user_details
+ - delete_order
+ - login
+ - order
+ - change_password
+
+Improper Inventory Management:
+ - all_endpoints
+
+Security Misconfiguration:
+ - None
+ - unsafe_load
+
+SQL Injection:
+ - search
+
+SSRF:
+ - redirect_to_external_api
+ - fetch_url
+ - fetch_data
+
+Unrestricted Business Flow:
+ - process_payment
+
+Unsafe Api Usage:
+ - redirect_to_external_api
+ - fetch_url
+ - fetch_data
+
