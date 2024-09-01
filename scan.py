@@ -646,7 +646,7 @@ def process_commit(repo, commit_sha):
                     dummy_file.write(full_content)
                     print(f"Saved content of {filename} to dummy.py")
                 # Process the saved file content (using threading for background processing)
-                # threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
+                threading.Thread(target=update_caches, args=(dummy_file_path,)).start()
             else:
                 print(f"Failed to fetch file content for {filename}, status code: {file_response.status_code}")
             
@@ -664,7 +664,7 @@ def scan_endpoint():
     """Handle incoming webhook events and process the received file content."""
     
     data = request.json
-    print(data,"hell")
+    print(data)
     
     try:
         commit_sha = data['after']
