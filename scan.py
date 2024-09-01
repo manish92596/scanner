@@ -260,117 +260,117 @@
 
 
 
-# fined gain code 
+# # fined gain code 
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-import subprocess
-import time
-import os
-import importlib.util
-import inspect
+# from flask import Flask, jsonify, request
+# from flask_cors import CORS
+# import subprocess
+# import time
+# import os
+# import importlib.util
+# import inspect
 
-from api.List_APIs import list_routes_in_file
+# from api.List_APIs import list_routes_in_file
 
-# Flask app setup
-app = Flask(__name__)
-CORS(app)
+# # Flask app setup
+# app = Flask(__name__)
+# CORS(app)
 
-# Global variables to cache the results
-cached_api_routes = None
-cached_vulnerabilities = None
-last_update_time = 0
-update_interval = 2  # seconds
+# # Global variables to cache the results
+# cached_api_routes = None
+# cached_vulnerabilities = None
+# last_update_time = 0
+# update_interval = 2  # seconds
 
-def load_analyzers():
-    """Dynamically load all vulnerability analyzers from the 'vulnerabilities' directory."""
-    analyzers = {}
-    vulnerabilities_path = os.path.join(os.path.dirname(__file__), 'vulnerabilities')
+# def load_analyzers():
+#     """Dynamically load all vulnerability analyzers from the 'vulnerabilities' directory."""
+#     analyzers = {}
+#     vulnerabilities_path = os.path.join(os.path.dirname(__file__), 'vulnerabilities')
 
-    for filename in os.listdir(vulnerabilities_path):
-        if filename.endswith('.py') and not filename.startswith('__'):
-            module_name = filename[:-3]
-            module_path = os.path.join(vulnerabilities_path, filename)
-            spec = importlib.util.spec_from_file_location(module_name, module_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+#     for filename in os.listdir(vulnerabilities_path):
+#         if filename.endswith('.py') and not filename.startswith('__'):
+#             module_name = filename[:-3]
+#             module_path = os.path.join(vulnerabilities_path, filename)
+#             spec = importlib.util.spec_from_file_location(module_name, module_path)
+#             module = importlib.util.module_from_spec(spec)
+#             spec.loader.exec_module(module)
             
-            # Automatically find functions starting with 'analyze_file_for_'
-            for name, func in inspect.getmembers(module, inspect.isfunction):
-                if name.startswith('analyze_file_for_'):
-                    analyzers[module_name] = func
+#             # Automatically find functions starting with 'analyze_file_for_'
+#             for name, func in inspect.getmembers(module, inspect.isfunction):
+#                 if name.startswith('analyze_file_for_'):
+#                     analyzers[module_name] = func
 
-    return analyzers
+#     return analyzers
 
-def update_caches(file_path):
-    global cached_api_routes, cached_vulnerabilities, last_update_time
+# def update_caches(file_path):
+#     global cached_api_routes, cached_vulnerabilities, last_update_time
 
-    if time.time() - last_update_time < update_interval:
-        return
+#     if time.time() - last_update_time < update_interval:
+#         return
 
-    changes_detected = False
+#     changes_detected = False
 
-    # Update API routes
-    new_api_routes = list_routes_in_file(file_path)
-    if new_api_routes != cached_api_routes:
-        cached_api_routes = new_api_routes
-        with open('all_apis.txt', 'w') as api_file:
-            for route in cached_api_routes:
-                api_file.write(f"{route}\n")
-        changes_detected = True
+#     # Update API routes
+#     new_api_routes = list_routes_in_file(file_path)
+#     if new_api_routes != cached_api_routes:
+#         cached_api_routes = new_api_routes
+#         with open('all_apis.txt', 'w') as api_file:
+#             for route in cached_api_routes:
+#                 api_file.write(f"{route}\n")
+#         changes_detected = True
 
-    # Update vulnerabilities
-    analyzers = load_analyzers()
-    new_vulnerabilities = {}
+#     # Update vulnerabilities
+#     analyzers = load_analyzers()
+#     new_vulnerabilities = {}
 
-    for vuln_name, analyzer_func in analyzers.items():
-        # Replace underscores with spaces in vulnerability names
-        formatted_vuln_name = vuln_name.replace('_', ' ')
-        new_vulnerabilities[formatted_vuln_name] = set(analyzer_func(file_path))
+#     for vuln_name, analyzer_func in analyzers.items():
+#         # Replace underscores with spaces in vulnerability names
+#         formatted_vuln_name = vuln_name.replace('_', ' ')
+#         new_vulnerabilities[formatted_vuln_name] = set(analyzer_func(file_path))
 
-    if new_vulnerabilities != cached_vulnerabilities:
-        cached_vulnerabilities = new_vulnerabilities
-        with open('all_vulnerabilities.txt', 'w') as vuln_file:
-            for vuln_type, vuln_list in cached_vulnerabilities.items():
-                if vuln_list:
-                    vuln_file.write(f"{vuln_type}:\n")
-                    for vuln in vuln_list:
-                        vuln_file.write(f" - {vuln}\n")
-                    vuln_file.write("\n")
-        changes_detected = True
+#     if new_vulnerabilities != cached_vulnerabilities:
+#         cached_vulnerabilities = new_vulnerabilities
+#         with open('all_vulnerabilities.txt', 'w') as vuln_file:
+#             for vuln_type, vuln_list in cached_vulnerabilities.items():
+#                 if vuln_list:
+#                     vuln_file.write(f"{vuln_type}:\n")
+#                     for vuln in vuln_list:
+#                         vuln_file.write(f" - {vuln}\n")
+#                     vuln_file.write("\n")
+#         changes_detected = True
 
-    last_update_time = time.time()
+#     last_update_time = time.time()
 
-    if changes_detected:
-        # Instead of directly updating the database, run the import_apis_vul.py script
-        try:
-            subprocess.run(["python", "import_apis_vul.py"], check=True)
-            print("import_apis_vul.py executed successfully.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error running import_apis_vul.py: {e}")
+#     if changes_detected:
+#         # Instead of directly updating the database, run the import_apis_vul.py script
+#         try:
+#             subprocess.run(["python", "import_apis_vul.py"], check=True)
+#             print("import_apis_vul.py executed successfully.")
+#         except subprocess.CalledProcessError as e:
+#             print(f"Error running import_apis_vul.py: {e}")
 
-@app.route('/scan', methods=['POST'])
-def scan_endpoint():
-    data = request.json
-    file_path = data.get('file_path')
+# @app.route('/scan', methods=['POST'])
+# def scan_endpoint():
+#     data = request.json
+#     file_path = data.get('file_path')
     
-    # Ensure the necessary database parameters are provided
-    db_params = {
-        "host": data.get('db_host'),
-        "user": data.get('db_user'),
-        "password": data.get('db_password'),
-        "database": data.get('db_name'),
-        "port": data.get('db_port')
-    }
+#     # Ensure the necessary database parameters are provided
+#     db_params = {
+#         "host": data.get('db_host'),
+#         "user": data.get('db_user'),
+#         "password": data.get('db_password'),
+#         "database": data.get('db_name'),
+#         "port": data.get('db_port')
+#     }
 
-    if not os.path.exists(file_path):
-        return jsonify({"error": "The file does not exist."}), 400
+#     if not os.path.exists(file_path):
+#         return jsonify({"error": "The file does not exist."}), 400
 
-    update_caches(file_path)
-    return jsonify({"status": "Scanning started."}), 200
+#     update_caches(file_path)
+#     return jsonify({"status": "Scanning started."}), 200
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=5001)
 
 
 
@@ -379,6 +379,7 @@ if __name__ == '__main__':
 # change
 
 
+import subprocess
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import threading
