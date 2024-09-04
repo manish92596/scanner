@@ -57,6 +57,27 @@ def analyze_file_for_unrestricted_business_flow(file_path):
     
     analyzer.visit(tree)
     return analyzer.vulnerable_endpoints
+# correct code
+# def check_unrestricted_business_flow(process_flow):
+#     risky_flows = ["bypass_order_process", "unauthorized_access", "force_execute"]
+#     return any(flow in process_flow for flow in risky_flows)
+
+
+
+def check_unrestricted_business_flow(process_flow):
+    """
+    Check if the business process flow is vulnerable to Unrestricted Business Flow.
+
+    Parameters:
+        process_flow (str): The process flow to analyze.
+
+    Returns:
+        bool: True if the process flow is vulnerable, False otherwise.
+    """
+    # Example: Check for sensitive processes without protection
+    sensitive_processes = ["process_order", "bypass_order_process"]
+    return any(process in process_flow for process in sensitive_processes)
+
 
 # def main():
 #     file_path = '../e-commerce.py'

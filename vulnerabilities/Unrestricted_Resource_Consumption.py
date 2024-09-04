@@ -91,6 +91,23 @@ def analyze_file_for_resource_consumption(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+def check_unrestricted_resource_consumption(code_snippet):
+    """
+    Check if the code snippet is vulnerable to Unrestricted Resource Consumption.
+
+    Parameters:
+        code_snippet (str): The code snippet to analyze.
+
+    Returns:
+        bool: True if the code snippet is vulnerable, False otherwise.
+    """
+    # Example: Detect resource-heavy loops or large allocations
+    heavy_operations = ["range(10000000)", "while True", "append(large_data)"]
+    return any(operation in code_snippet for operation in heavy_operations)
+
+
+
+
 # def main():
 #     root_directory = '.'  # Set to the current directory
 #     vulnerabilities = []

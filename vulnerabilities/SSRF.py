@@ -53,6 +53,26 @@ def analyze_file_for_ssrf(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+def check_ssrf(url):
+    """
+    Check if the provided URL is potentially vulnerable to SSRF attacks.
+    
+    Parameters:
+        url (str): The URL to analyze.
+
+    Returns:
+        bool: True if the URL might be vulnerable to SSRF, False otherwise.
+    """
+    # Simulated logic: Check if URL points to metadata services which is common in SSRF attacks
+    metadata_services = [
+        "http://169.254.169.254/latest/meta-data",  # AWS metadata
+        "http://metadata.google.internal",  # Google Cloud metadata
+        "http://169.254.169.254/metadata/v1",  # DigitalOcean metadata
+    ]
+    return any(service in url for service in metadata_services)
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_ssrf(file_path)

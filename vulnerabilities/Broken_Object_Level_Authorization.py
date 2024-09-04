@@ -72,6 +72,23 @@ def analyze_file_for_bola(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+def check_broken_object_level_authorization(auth_check):
+    """
+    Check if the authorization process is vulnerable to Broken Object Level Authorization (BOLA).
+
+    Parameters:
+        auth_check (str): The authorization check to analyze.
+
+    Returns:
+        bool: True if the authorization is vulnerable, False otherwise.
+    """
+    # Example: Check for missing or bypassed authorization checks
+    bypass_patterns = ["bypass_authorization", "no_auth_check"]
+    return any(pattern in auth_check for pattern in bypass_patterns)
+
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_bola(file_path)

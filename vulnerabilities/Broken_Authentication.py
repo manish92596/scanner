@@ -65,6 +65,23 @@ class AuthAnalyzer(ast.NodeVisitor):
             return True
         return False
 
+def check_broken_authentication(auth_process):
+    """
+    Check if the authentication process is vulnerable to Broken Authentication.
+
+    Parameters:
+        auth_process (str): The authentication process to analyze.
+
+    Returns:
+        bool: True if the process is vulnerable, False otherwise.
+    """
+    # Example: Check if weak passwords or insecure login processes are used
+    weak_patterns = ["'weak_password'", "'password123'", "login"]
+    return any(pattern in auth_process for pattern in weak_patterns)
+
+
+
+
 def analyze_file_for_auth(file_path):
     with open(file_path, "r") as source:
         tree = ast.parse(source.read())
@@ -83,4 +100,4 @@ def analyze_file_for_auth(file_path):
 #         print("No Broken Authentication vulnerabilities found.")
 
 # if __name__ == "__main__":
-#     # main()
+#     main()

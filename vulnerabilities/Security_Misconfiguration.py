@@ -41,6 +41,22 @@ def analyze_file_for_security_misconfig(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+def check_security_misconfiguration(config_setting):
+    """
+    Check if the configuration setting is vulnerable to Security Misconfiguration.
+
+    Parameters:
+        config_setting (str): The configuration setting to analyze.
+
+    Returns:
+        bool: True if the configuration is vulnerable, False otherwise.
+    """
+   
+    insecure_configs = ["DEBUG = True", "CORS_ALLOW_ALL_ORIGINS = True"]
+    return any(config in config_setting for config in insecure_configs)
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_security_misconfig(file_path)

@@ -69,6 +69,29 @@ def analyze_file_for_sql_injection(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+def check_sql_injection(query):
+    risky_patterns = [
+        " OR ", " AND ", ";--", " DROP ", " INSERT ", " DELETE ", " UPDATE ", "' OR '", '" OR "', "' AND '", '" AND "'
+    ]
+    return any(pattern.lower() in query.lower() for pattern in risky_patterns)
+
+# def check_sql_injection(query):
+#     """
+#     Check if the SQL query is potentially vulnerable to SQL injection.
+
+#     Parameters:
+#         query (str): The SQL query to analyze.
+
+#     Returns:
+#         bool: True if the query is vulnerable, False otherwise.
+#     """
+#     # Example: Check for common SQL injection patterns
+#     injection_patterns = ["'", ";", "--", " OR ", " AND "]
+#     return any(pattern in query for pattern in injection_patterns)
+
+# Now, when you write your tests, you can directly pass SQL strings:
+
+
 # def main():
 #     root_directory = '.'  # Set to the current directory
 #     vulnerabilities = set()

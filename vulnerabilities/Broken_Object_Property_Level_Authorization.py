@@ -68,6 +68,23 @@ def analyze_file_for_broken_property_auth(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_endpoints
 
+
+def check_bopa(data_access):
+    """
+    Check if the data access process is vulnerable to Broken Property-Level Authorization (BOPA).
+
+    Parameters:
+        data_access (str): The data access process to analyze.
+
+    Returns:
+        bool: True if the data access is vulnerable, False otherwise.
+    """
+    # Example: Detect access to sensitive properties without checks
+    sensitive_accesses = ["access_sensitive_data", "get_user_password"]
+    return any(access in data_access for access in sensitive_accesses)
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_broken_property_auth(file_path)

@@ -5,10 +5,10 @@ import os
 def connect_to_database():
     """Establish and return a MySQL database connection."""
     return mysql.connector.connect(
-        host="api-security-db.co0ynpevyflj.ap-south-1.rds.amazonaws.com",  # Your MySQL server host
-        user="root",  # Your MySQL username
-        password="abhi1301",  # Your MySQL password
-        database="api_database",  # Database name
+        host="",  # Your MySQL server host
+        user="",  # Your MySQL username
+        password="",  # Your MySQL password
+        database="",  # Database name
         port=5506
     )
 

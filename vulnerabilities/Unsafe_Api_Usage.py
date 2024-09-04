@@ -54,6 +54,24 @@ def analyze_file_for_unsafe_api_usage(file_path):
     analyzer.analyze_file_for_unsafe_api_usage(file_path)
     return analyzer.vulnerable_routes
 
+def check_unsafe_api_usage(api_call):
+    """
+    Check if the API call is unsafe and potentially vulnerable to exploits.
+
+    Parameters:
+        api_call (str): The API call to analyze.
+
+    Returns:
+        bool: True if the API call is unsafe, False otherwise.
+    """
+    # Example: Check if API uses unvalidated input or lacks response checks
+    unsafe_patterns = ["execute", "run", "call"]
+    return any(pattern in api_call for pattern in unsafe_patterns)
+
+
+
+
+
 # def main(directory):
 #     vulnerable_routes = set()
 #     for dirpath, _, filenames in os.walk(directory):

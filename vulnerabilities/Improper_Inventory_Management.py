@@ -26,6 +26,22 @@ def analyze_file_for_improper_inventory_management(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_routes
 
+
+def check_improper_inventory_management(route):
+    """
+    Check if the route is exposing API inventory without proper controls.
+
+    Parameters:
+        route (str): The route or function that manages inventory.
+
+    Returns:
+        bool: True if the route is improperly exposing inventory, False otherwise.
+    """
+    # Example: Check if a route is exposing all API endpoints without restrictions
+    return "iter_rules" in route or "all_endpoints" in route
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_improper_inventory_management(file_path)
